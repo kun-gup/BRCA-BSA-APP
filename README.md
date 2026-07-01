@@ -1,5 +1,6 @@
 # BRCA-APP
 BRCA Trophy App — Satpura Hostel, IIT Delhi
+<br>
 Roles
 Role	Scope	Can do
 Student	Read-only	View leaderboard, schedule, notices. Raise complaints/queries.
