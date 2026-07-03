@@ -44,7 +44,10 @@ create policy "complaints_select_own_or_admin"
   using (auth.uid() = raised_by or is_admin());
 
 -- ---------- inventory_current_status (with board_id + status) ----------
+-- analytics_inventory_flags depends on this view, so drop it first.
+drop view if exists analytics_inventory_flags;
 drop view if exists inventory_current_status;
+
 create view inventory_current_status
 with (security_invoker = true) as
 select
@@ -70,6 +73,12 @@ left join lateral (
   order by issued_at desc
   limit 1
 ) c on true;
+
+-- Recreate the dependent view now that inventory_current_status exists again.
+create view analytics_inventory_flags
+with (security_invoker = true) as
+select * from inventory_current_status
+where condition in ('poor','missing');
 
 -- ---------- star_performers rep-nomination rights (from 009, re-confirmed) ----------
 drop policy if exists "star_performers_admin_write" on star_performers;
